@@ -6,7 +6,7 @@
 /*   By: bakumcu <bakumcu@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 14:10:30 by bakumcu           #+#    #+#             */
-/*   Updated: 2026/03/21 18:57:05 by bakumcu          ###   ########.fr       */
+/*   Updated: 2026/03/22 13:08:26 by bakumcu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,54 @@ static char	*ft_read_store_line(int fd, char *stash)
 	return (stash);
 }
 
+static char	*ft_write_line(char *stash)
+{
+	int	len;
+
+	if (!stash || !stash[0])
+		return (NULL);
+	if (ft_strchr(stash, '\n'))
+		len = ft_strchr(stash, '\n') - stash + 1;
+	else
+		len = ft_strlen(stash);
+	return (ft_substr(stash, 0, len));
+}
+
+/*
+* What this does is that it takes the line and goes until it
+* sees a \n. then makes a dupe of the text starting from
+* the second line as we have already printed the first line
+*/
+
+static char	*ft_make_leftover(char *stash) 
+{
+	char	*newline;
+	char	*new_stash;
+
+	newline = ft_strchr(stash, '\n');
+	if (!newline)
+	{
+		free(stash);
+		return (NULL);
+	}
+	new_stash = ft_strdup(newline + 1);
+	free(stash);
+	return (new_stash);
+}
+
 char	*get_next_line(int fd)
 {
-	
+	static char	*stash;
+	char		*line;
+
+	if (fd < 0 || BUFFER_SIZE <= 0)
+		return (NULL);
+	stash = ft_read_store_line(fd, stash);
+	if (!stash)
+		return (NULL);
+	line = ft_write_line(stash);
+	stash = ft_make_leftover(stash);
+	return (line);
 }
 
 /*
