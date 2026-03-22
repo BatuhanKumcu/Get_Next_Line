@@ -6,7 +6,7 @@
 /*   By: bakumcu <bakumcu@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 14:10:30 by bakumcu           #+#    #+#             */
-/*   Updated: 2026/03/22 13:08:26 by bakumcu          ###   ########.fr       */
+/*   Updated: 2026/03/22 14:45:57 by bakumcu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,20 +16,25 @@ static char	*ft_read_store_line(int fd, char *stash)
 {
 	char	*buffer;
 	int		bytes;
+	char	*temp;
 
 	buffer = malloc(BUFFER_SIZE + 1);
 	if (!buffer)
 		return (NULL);
-	while (!ft_strchr(stash, '\n') && bytes > 0)
+	bytes = 1;
+	while ((!stash) || (!ft_strchr(stash, '\n') && bytes > 0))
 	{
 		bytes = read(fd, buffer, BUFFER_SIZE);
 		if (bytes < 0)
 		{
 			free(buffer);
+			free(stash);
 			return (NULL);
 		}
 		buffer[bytes] = '\0';
-		stash = ft_strjoin(stash, buffer);
+		temp = ft_strjoin(stash, buffer);
+		free(stash);
+		stash = temp;
 	}
 	free(buffer);
 	return (stash);
@@ -61,6 +66,11 @@ static char	*ft_make_leftover(char *stash)
 
 	newline = ft_strchr(stash, '\n');
 	if (!newline)
+	{
+		free(stash);
+		return (NULL);
+	}
+	if (*(newline + 1) == '\0')
 	{
 		free(stash);
 		return (NULL);

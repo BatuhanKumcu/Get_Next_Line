@@ -6,7 +6,7 @@
 /*   By: bakumcu <bakumcu@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 14:30:08 by bakumcu           #+#    #+#             */
-/*   Updated: 2026/03/21 17:49:49 by bakumcu          ###   ########.fr       */
+/*   Updated: 2026/03/22 14:10:38 by bakumcu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 # include <fcntl.h>
 
 # ifndef BUFFER_SIZE
-#  define BUFFER_SIZE 1000
+#  define BUFFER_SIZE 100
 # endif
 
 size_t	ft_strlen(const char *s);
