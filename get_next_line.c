@@ -6,17 +6,25 @@
 /*   By: bakumcu <bakumcu@student.42istanbul.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/18 14:10:30 by bakumcu           #+#    #+#             */
-/*   Updated: 2026/03/22 14:45:57 by bakumcu          ###   ########.fr       */
+/*   Updated: 2026/05/16 20:49:39 by bakumcu          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
+static char	*ft_join_and_free(char *stash, char *buffer)
+{
+	char	*temp;
+
+	temp = ft_strjoin(stash, buffer);
+	free(stash);
+	return (temp);
+}
+
 static char	*ft_read_store_line(int fd, char *stash)
 {
 	char	*buffer;
 	int		bytes;
-	char	*temp;
 
 	buffer = malloc(BUFFER_SIZE + 1);
 	if (!buffer)
@@ -26,15 +34,11 @@ static char	*ft_read_store_line(int fd, char *stash)
 	{
 		bytes = read(fd, buffer, BUFFER_SIZE);
 		if (bytes < 0)
-		{
-			free(buffer);
-			free(stash);
-			return (NULL);
-		}
+			return (free(buffer), free(stash), NULL);
 		buffer[bytes] = '\0';
-		temp = ft_strjoin(stash, buffer);
-		free(stash);
-		stash = temp;
+		stash = ft_join_and_free(stash, buffer);
+		if (!stash)
+			return (free(buffer), NULL);
 	}
 	free(buffer);
 	return (stash);
@@ -53,13 +57,7 @@ static char	*ft_write_line(char *stash)
 	return (ft_substr(stash, 0, len));
 }
 
-/*
-* What this does is that it takes the line and goes until it
-* sees a \n. then makes a dupe of the text starting from
-* the second line as we have already printed the first line
-*/
-
-static char	*ft_make_leftover(char *stash) 
+static char	*ft_make_leftover(char *stash)
 {
 	char	*newline;
 	char	*new_stash;
@@ -94,17 +92,3 @@ char	*get_next_line(int fd)
 	stash = ft_make_leftover(stash);
 	return (line);
 }
-
-/*
-* newline pos 
-* get the line
-* read the line 
-* free the line 
-* combine all in gnl
-*/
-
-/*
-* We basically have to grab a text inside a file and go until we see
-* newline. After the newline we take the line as the first line and 
-* remaining as leftover. we go until all lines end
-*/
